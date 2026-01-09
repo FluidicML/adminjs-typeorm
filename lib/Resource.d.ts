@@ -4,10 +4,11 @@ import { Property } from "./Property.js";
 type ParamsType = Record<string, any>;
 export declare class Resource extends BaseResource {
     static validate: any;
-    static dataSource: DataSource;
+    static overrideDataSource: DataSource | null;
     private model;
     private propsObject;
     constructor(model: typeof BaseEntity);
+    private get repo();
     databaseName(): string;
     databaseType(): string;
     name(): string;
@@ -15,7 +16,6 @@ export declare class Resource extends BaseResource {
     idName(): string;
     properties(): Array<Property>;
     property(path: string): Property;
-    private get repo();
     count(filter: Filter): Promise<number>;
     find(filter: Filter, params: any): Promise<Array<BaseRecord>>;
     findOne(id: string | number): Promise<BaseRecord | null>;

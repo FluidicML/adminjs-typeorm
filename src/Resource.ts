@@ -17,7 +17,7 @@ type ParamsType = Record<string, any>;
 export class Resource extends BaseResource {
   public static validate: any;
 
-  public static dataSource: DataSource;
+  public static overrideDataSource: DataSource | null = null;
 
   private model: typeof BaseEntity;
 
@@ -28,6 +28,12 @@ export class Resource extends BaseResource {
 
     this.model = model;
     this.propsObject = this.prepareProps();
+  }
+
+  private get repo() {
+    return Resource.overrideDataSource
+      ? Resource.overrideDataSource.getRepository(this.model)
+      : this.model.getRepository();
   }
 
   public databaseName(): string {
@@ -61,12 +67,6 @@ export class Resource extends BaseResource {
 
   public property(path: string): Property {
     return this.propsObject[path];
-  }
-
-  private get repo() {
-    return Resource.dataSource
-      ? Resource.dataSource.getRepository(this.model)
-      : this.model.getRepository();
   }
 
   public async count(filter: Filter): Promise<number> {
